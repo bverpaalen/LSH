@@ -3,6 +3,7 @@ import scipy.sparse as sciparse
 import data
 import min_hashing as mh
 import similarity as sim
+import hashlib
 
 import numpy as np
 
@@ -10,21 +11,23 @@ import numpy as np
 def experimenteer(filename):
 
     movie_data = data.load(filename, 10000)
-    matrix = data.transform_to_matrix(movie_data)
-    print(len(matrix))
+    user_movies_matrix = data.transform_to_matrix(movie_data)
+    print(len(user_movies_matrix))
 
     distinct_movies = np.unique(movie_data[:, 1])
     permutations = mh.generate_permutations(distinct_movies, 100)
 
-    signature_matrix = np.array([np.zeros(100) for i in range(len(matrix))])
+    signature_matrix = np.array([np.zeros(100) for i in range(len(user_movies_matrix))])
     for movie_index, movie in enumerate(distinct_movies):
-        for user_id, userMovies in enumerate(matrix):
+        for user_id, userMovies in enumerate(user_movies_matrix):
             if any(l == 0 for l in signature_matrix[user_id]):
                 for pnr, permutation in enumerate(permutations):
                     if signature_matrix[user_id][pnr] == 0 and permutation[movie_index] in userMovies:
                         signature_matrix[user_id][pnr] = movie_index + 1
 
     #print(signature_matrix)
+
+    #signature_matrix = mh.generate_signature(user_movies_matrix)
 
     similar_users = []
     for base_user, signature1 in enumerate(signature_matrix):
@@ -38,7 +41,8 @@ def experimenteer(filename):
                 similar_users.append((base_user, to_compare_user))
 
             #print(round(intersection / len(signature1), 2))
-            #print()
+            #print()'''''
+
     print(similar_users)
 
     ''''first, second = similar_users[0]
