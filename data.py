@@ -1,12 +1,15 @@
 import numpy as np
 
-def load(filename):
+
+def load(filename, take=None):
     data = np.load(filename)
-    sample = data[:1000]
-    return sample
+    if not take is None:
+        return data[:take]
+
+    return data
+
 
 def transform_to_matrix(data):
-
     user = -1
     matrix = []
     for i in data:
