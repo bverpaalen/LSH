@@ -3,7 +3,7 @@ import numpy as np
 
 def load(filename, take=None):
     data = np.load(filename)
-    if not take is None:
+    if take is not None:
         return data[:take]
 
     return data
@@ -17,6 +17,6 @@ def transform_to_matrix(data):
             matrix[user].append(i[1])
         else:
             user = i[0]
-            matrix.append([i[0]])
+            matrix.append([i[1]])
 
     return matrix
