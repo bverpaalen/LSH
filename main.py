@@ -7,7 +7,7 @@ import LSH
 import numpy as np
 
 bands = 15
-rows = 10
+rows = 20
 
 
 def similar_users(signature_matrix):
