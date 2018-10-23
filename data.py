@@ -17,6 +17,6 @@ def transform_to_matrix(data):
             matrix[user].append(i[1])
         else:
             user = i[0]
-            matrix.append([i[0]])
+            matrix.append([i[1]])
 
     return matrix

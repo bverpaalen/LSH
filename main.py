@@ -1,49 +1,83 @@
-import pandas as pd
-import scipy.sparse as sciparse
 import data
 import min_hashing as mh
 import similarity as sim
 import hashlib
+import LSH
 
 import numpy as np
 
 
+def similar_users(signature_matrix):
+    similar_users = []
+    for base_user, signature1 in enumerate(signature_matrix):
+        b = []
+        for to_compare_user in range(base_user + 1, len(signature_matrix)):
+            # print(str(base_user) + " " + str(to_compare_user))
+            signature2 = signature_matrix[to_compare_user]
+
+            similarity = sim.jaccard_sig(signature1, signature2)
+
+            if similarity > 0.3:
+                similar_users.append((base_user, to_compare_user))
+            b.append(similarity)
+            # print(round(intersection / len(signature1), 2))
+            # print()'''''
+        print(b)
+    print(similar_users)
+
+
 def experimenteer(filename):
-
-    movie_data = data.load(filename, 10000)
+    movie_data = data.load(filename, 5000000)
     user_movies_matrix = data.transform_to_matrix(movie_data)
-    print(len(user_movies_matrix))
+    #user_movies_matrix = user_movies_matrix[413:]
 
-    distinct_movies = np.unique(movie_data[:, 1])
+
+    #print(sim.jaccard(user_movies_matrix[413], user_movies_matrix[4345]))
+
+    #a = []
+    #for i in range(1, 20):
+        #a.append(sim.jaccard(user_movies_matrix[0], user_movies_matrix[i]))
+
+    #print(a)
+    ''''print(sim.jaccard(user_movies_matrix[1], user_movies_matrix[41]))
+    print(sim.jaccard(user_movies_matrix[1], user_movies_matrix[86]))
+    print(sim.jaccard(user_movies_matrix[1], user_movies_matrix[90]))
+    print(sim.jaccard(user_movies_matrix[5], user_movies_matrix[39]))
+    print(sim.jaccard(user_movies_matrix[12], user_movies_matrix[14]))
+    print(sim.jaccard(user_movies_matrix[21], user_movies_matrix[146]))'''
+
+    #signature_matrix = mh.generate_signature(user_movies_matrix)
+
+
+    #print(len(user_movies_matrix))
+
+    #shingles = LSH.generate_shingles(user_movies_matrix)
+
+    ''''distinct_movies = np.unique(movie_data[:, 1])
     permutations = mh.generate_permutations(distinct_movies, 100)
 
-    signature_matrix = np.array([np.zeros(100) for i in range(len(user_movies_matrix))])
+    signature_matrix = np.array([np.zeros(100).astype(int) for i in range(len(user_movies_matrix))])
     for movie_index, movie in enumerate(distinct_movies):
         for user_id, userMovies in enumerate(user_movies_matrix):
             if any(l == 0 for l in signature_matrix[user_id]):
                 for pnr, permutation in enumerate(permutations):
                     if signature_matrix[user_id][pnr] == 0 and permutation[movie_index] in userMovies:
-                        signature_matrix[user_id][pnr] = movie_index + 1
+                        signature_matrix[user_id][pnr] = movie_index + 1'''''
 
+    signature_matrix = mh.generate_signature(user_movies_matrix)
+    candidates = LSH.apply(signature_matrix)
     #print(signature_matrix)
+    #similar_users(signature_matrix)
 
-    #signature_matrix = mh.generate_signature(user_movies_matrix)
+    for candidate_group in candidates:
+        for cnr1, candidate1 in enumerate(candidate_group):
+            for cnr2 in range(cnr1 + 1, len(candidate_group)):
+                candidate2 = candidate_group[cnr2]
+                print((candidate1,candidate2))
+                print(sim.jaccard(user_movies_matrix[candidate1], user_movies_matrix[candidate2]))
 
-    similar_users = []
-    for base_user, signature1 in enumerate(signature_matrix):
-        for to_compare_user in range(base_user+1, len(signature_matrix)):
-            #print(str(base_user) + " " + str(to_compare_user))
-            signature2 = signature_matrix[to_compare_user]
+    #similar_users(signature_matrix)
 
-            similarity = sim.jaccard(signature1, signature2)
-
-            if similarity > 0.3:
-                similar_users.append((base_user, to_compare_user))
-
-            #print(round(intersection / len(signature1), 2))
-            #print()'''''
-
-    print(similar_users)
 
     ''''first, second = similar_users[0]
     intersection = 0
