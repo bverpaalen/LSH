@@ -6,9 +6,8 @@ import LSH
 
 import numpy as np
 
-bands = 15
-rows = 20
-
+bands = 3
+rows = 7
 
 def similar_users(signature_matrix):
     similar_users = []
@@ -30,7 +29,7 @@ def similar_users(signature_matrix):
 
 
 def experimenteer(filename):
-    movie_data = data.load(filename,30000000)
+    movie_data = data.load(filename,4000000)
     user_movies_matrix = data.transform_to_matrix(movie_data)
     distinct_movies = np.unique(movie_data[:, 1])
     #user_movies_matrix = user_movies_matrix[413:]
@@ -69,7 +68,7 @@ def experimenteer(filename):
                         signature_matrix[user_id][pnr] = movie_index + 1'''''
 
     start = timer()
-    permutations = mh.generate_permutations(distinct_movies,10)
+    permutations = mh.generate_permutations(distinct_movies,100)
     print("Permutations: "+str(timer()-start))
 
     start = timer()
@@ -82,18 +81,22 @@ def experimenteer(filename):
     #print(signature_matrix)
     #similar_users(signature_matrix)
     print("Candidates len: "+str(len(candidates)))
+
+    bestCandidates = []
+
     for candidate_group in candidates:
         print("Bucket size: "+str(len(candidate_group)))
-        #print("Bucket size: "+str(len(candidate_group)))
         for cnr1, candidate1 in enumerate(candidate_group):
             for cnr2 in range(cnr1 + 1, len(candidate_group)):
                 candidate2 = candidate_group[cnr2]
-                if candidate1 == candidate2:
-                    continue
                 jaccardSim = sim.jaccard(user_movies_matrix[candidate1], user_movies_matrix[candidate2])
                 if jaccardSim >= 0.5:
                     print((candidate1,candidate2))
                     print(jaccardSim)
+                    bestCandidates.append((candidate1,candidate2))
+    for candidates in bestCandidates:
+        print(candidate1,candidate2)
+        print(sim.jaccard(user_movies_matrix[candidate1],user_movies_matrix[candidate2]))
     #similar_users(signature_matrix)
 
 

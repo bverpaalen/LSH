@@ -1,5 +1,5 @@
 import numpy as np
-import mmh3 as mmh3
+#import mmh3 as mmh3
 import sys
 
 def generate_permutations(distinct_elements,amount):

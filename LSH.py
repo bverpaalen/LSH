@@ -18,7 +18,6 @@ def apply(signature_matrix, bands=7, rows=15):
         for bucket in buckets:
             if len(buckets[bucket]) > 1:
                 candidates.append(buckets[bucket])
-                #print(buckets[bucket])
     return candidates
 
 def apply2(matrix,bands=7,rows=15):
@@ -34,6 +33,10 @@ def apply2(matrix,bands=7,rows=15):
 
         for band in range(bands):
             bucketValue = group[band * rows:(band+1) * rows]
+
+            if(len(bucketValue) < band*rows):
+                continue
+
             if bucketValue in buckets:
                 if user_id not in buckets[bucketValue]:
                     buckets[bucketValue].append(user_id)
@@ -43,6 +46,7 @@ def apply2(matrix,bands=7,rows=15):
     for bucket in buckets:
         if (len(buckets[bucket]) > 1):
             candidates.append(buckets[bucket])
+            #print(bucket)
     return candidates
 
 def generate_shingles(user_movies_matrix, k=10, shingle=None):
