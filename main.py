@@ -6,7 +6,7 @@ import LSH
 
 import numpy as np
 
-bands = 3
+bands = 20
 rows = 7
 
 def similar_users(signature_matrix):
@@ -29,7 +29,7 @@ def similar_users(signature_matrix):
 
 
 def experimenteer(filename):
-    movie_data = data.load(filename,4000000)
+    movie_data = data.load(filename,10000000)
     user_movies_matrix = data.transform_to_matrix(movie_data)
     distinct_movies = np.unique(movie_data[:, 1])
     #user_movies_matrix = user_movies_matrix[413:]
@@ -68,7 +68,7 @@ def experimenteer(filename):
                         signature_matrix[user_id][pnr] = movie_index + 1'''''
 
     start = timer()
-    permutations = mh.generate_permutations(distinct_movies,100)
+    permutations = mh.generate_permutations(distinct_movies,bands * rows)
     print("Permutations: "+str(timer()-start))
 
     start = timer()
@@ -95,6 +95,8 @@ def experimenteer(filename):
                     print(jaccardSim)
                     bestCandidates.append((candidate1,candidate2))
     for candidates in bestCandidates:
+        candidate1 = candidates[0]
+        candidate2 = candidates[1]
         print(candidate1,candidate2)
         print(sim.jaccard(user_movies_matrix[candidate1],user_movies_matrix[candidate2]))
     #similar_users(signature_matrix)

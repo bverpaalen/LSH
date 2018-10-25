@@ -44,9 +44,9 @@ def apply2(matrix,bands=7,rows=15):
                 buckets[bucketValue] = [user_id]
 
     for bucket in buckets:
-        if (len(buckets[bucket]) > 1):
+        if (len(buckets[bucket]) > 20):
             candidates.append(buckets[bucket])
-            #print(bucket)
+            print(bucket)
     return candidates
 
 def generate_shingles(user_movies_matrix, k=10, shingle=None):
